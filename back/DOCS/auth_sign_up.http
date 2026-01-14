@@ -1,0 +1,21 @@
+### Signup Endpoint: POST /api/auth/sign-up
+
+POST http://localhost:3000/api/auth/sign-up
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "fullName": "Example User"
+}
+###
+
+### Signup - Validation Error (missing field)
+
+POST http://localhost:3000/api/auth/sign-up
+Content-Type: application/json
+
+{
+  "email": "invalidtest@example.com"
+}
+###

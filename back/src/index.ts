@@ -1,7 +1,6 @@
 import express from 'express';
 import { createAuthRoutes } from './presentation/routes/authRoutes';
 
-
 const app = express();
 app.use(express.json());
 createAuthRoutes(app)

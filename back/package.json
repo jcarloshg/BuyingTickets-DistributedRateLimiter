@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Node.js & TypeScript Vertical Slice Architecture for Auth Module (Feature-First)",
   "main": "src/index.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
-    "start": "node dist/presentation/index.js",
+    "start": "ts-node src/index.ts",
     "build": "tsc"
   },
   "keywords": [

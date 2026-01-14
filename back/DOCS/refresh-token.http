@@ -1,0 +1,7 @@
+### REFRESH TOKEN
+POST http://localhost:4000/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "<insert-your-refresh-token-here>"
+}

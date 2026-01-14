@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
-import { SignUpUseCase } from '../../application/auth/sign-up/application/SignUpUseCase';
-import { UserRepository } from '../../application/auth/sign-up/infrastructure/db/UserRepository';
-import { EncryptionService } from '../../application/auth/sign-up/infrastructure/services/EncryptionService';
+import { SignUpUseCase } from '../../../application/auth/sign-up/application/SignUpUseCase';
+import { EncryptionService } from '../../../application/auth/login/infrastructure/services/EncryptionService';
+import { UserRepoInMemory } from '../../../application/auth/sign-up/infrastructure/db/UserRepo.in-memory';
 
 export class SignUpController {
   private signUpUseCase: SignUpUseCase;
 
   constructor() {
-    this.signUpUseCase = new SignUpUseCase(new UserRepository(), new EncryptionService());
+    const userRepoInMemory = new UserRepoInMemory();
+    this.signUpUseCase = new SignUpUseCase(userRepoInMemory, new EncryptionService());
   }
 
   async handle(req: Request, res: Response) {

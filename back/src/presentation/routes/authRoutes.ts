@@ -1,9 +1,10 @@
 import { Express, Router } from "express";
-import { SignUpController } from "../controllers/auth/SignUpController.js";
-import { LoginController } from "../controllers/auth/LoginController.js";
-import { zodValidate } from "../middlewares/zodValidate.js";
-import { signUpInputSchema } from "../../application/auth/sign-up/models/entities/SignUpInput.js";
-import { loginInputSchema } from "../../application/auth/login/models/entities/LoginInput.js";
+import { SignUpController } from "../controllers/auth/SignUpController";
+import { LoginController } from "../controllers/auth/LoginController";
+import { zodValidate } from "../middlewares/zodValidate";
+// schemas
+import { signUpInputSchema } from "../../application/auth/sign-up/models/entities/SignUpInput";
+import { loginInputSchema } from "../../application/auth/login/models/entities/LoginInput";
 
 export const createAuthRoutes = (app: Express) => {
     const router = Router();

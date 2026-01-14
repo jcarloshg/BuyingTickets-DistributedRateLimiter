@@ -1,13 +1,13 @@
 // Depends ONLY on models (ports/interfaces/contracts)
 import type { IUserRepository } from '../models/db/IUserRepository';
-import type { IEncryptionService } from '../models/services/IEncryptionService';
 import type { LoginInput } from '../models/entities/LoginInput';
+import { IEncryptionService } from '../../../shared/models/services/IEncryptionService';
 
 export class LoginUseCase {
   constructor(
     private userRepository: IUserRepository,
     private encryptionService: IEncryptionService
-  ) {}
+  ) { }
 
   async execute(input: LoginInput) {
     const user = await this.userRepository.findByEmail(input.email);

@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
-import { LoginUseCase } from '../../application/auth/login/application/LoginUseCase';
-import { UserRepository } from '../../application/auth/login/infrastructure/db/UserRepository';
-import { EncryptionService } from '../../application/auth/login/infrastructure/services/EncryptionService';
+import { LoginUseCase } from '../../../application/auth/login/application/LoginUseCase';
+import { UserRepoInMemory } from '../../../application/auth/login/infrastructure/db/UserRepo.in-memory';
+import { EncryptionService } from '../../../application/shared/infrastructure/services/EncryptionService';
 
 export class LoginController {
   private loginUseCase: LoginUseCase;
 
   constructor() {
-    this.loginUseCase = new LoginUseCase(new UserRepository(), new EncryptionService());
+    const userRepoInMemory = new UserRepoInMemory();
+    const encryptionService = new EncryptionService();
+    this.loginUseCase = new LoginUseCase(userRepoInMemory, encryptionService);
   }
 
   async handle(req: Request, res: Response) {

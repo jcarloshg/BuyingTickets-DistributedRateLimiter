@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
 import { SignUpUseCase } from '../../../application/auth/sign-up/application/SignUpUseCase';
-import { EncryptionService } from '../../../application/auth/login/infrastructure/services/EncryptionService';
 import { UserRepoInMemory } from '../../../application/auth/sign-up/infrastructure/db/UserRepo.in-memory';
+import { EncryptionService } from '../../../application/shared/infrastructure/services/EncryptionService';
 
 export class SignUpController {
   private signUpUseCase: SignUpUseCase;
 
   constructor() {
     const userRepoInMemory = new UserRepoInMemory();
-    this.signUpUseCase = new SignUpUseCase(userRepoInMemory, new EncryptionService());
+    const encryptionService = new EncryptionService();
+    this.signUpUseCase = new SignUpUseCase(userRepoInMemory, encryptionService);
   }
 
   async handle(req: Request, res: Response) {

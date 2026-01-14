@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { LoginUseCase } from '../../../application/auth/login/application/LoginUseCase';
 import { UserRepoInMemory } from '../../../application/auth/login/infrastructure/db/UserRepo.in-memory';
 import { EncryptionService } from '../../../application/shared/infrastructure/services/EncryptionService';
+import { JwtService } from '../../../application/auth/login/infrastructure/services/JwtService';
 
 export class LoginController {
   private loginUseCase: LoginUseCase;
@@ -9,7 +10,8 @@ export class LoginController {
   constructor() {
     const userRepoInMemory = new UserRepoInMemory();
     const encryptionService = new EncryptionService();
-    this.loginUseCase = new LoginUseCase(userRepoInMemory, encryptionService);
+    const jwtService = new JwtService();
+    this.loginUseCase = new LoginUseCase(userRepoInMemory, encryptionService, jwtService);
   }
 
   async handle(req: Request, res: Response) {

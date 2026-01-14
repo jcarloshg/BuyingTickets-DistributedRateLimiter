@@ -1,9 +1,10 @@
-import express from 'express';
-import authRoutes from './routes/authRoutes';
+import express from "express";
+import { createAuthRoutes } from "./routes/authRoutes.js";
 
 const app = express();
 app.use(express.json());
-app.use('/api/auth', authRoutes);
+
+createAuthRoutes(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

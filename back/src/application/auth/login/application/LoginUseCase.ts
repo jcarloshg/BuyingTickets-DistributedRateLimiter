@@ -1,23 +1,19 @@
-// Depends ONLY on models (ports/interfaces/contracts)
-import type { IUserRepository } from '../models/db/IUserRepository';
-import type { LoginInput } from '../models/entities/LoginInput';
-import { IEncryptionService } from '../../../shared/models/services/IEncryptionService';
-import { IJwtService } from '../models/services/IJwtService';
+import { ILoginRepository } from '../models/ILoginRepository';
+import { ILoginInput } from '../models/LoginInput';
 
 export class LoginUseCase {
   constructor(
-    private userRepository: IUserRepository,
-    private encryptionService: IEncryptionService,
-    private jwtService: IJwtService
-  ) { }
+    private userRepo: ILoginRepository,
+    private passwordVerifier: { verify: (hash: string, pw: string) => Promise<boolean> },
+    private tokenService: { issueToken: (payload: any) => string }
+  ) {}
 
-  async execute(input: LoginInput) {
-    const user = await this.userRepository.findByEmail(input.email);
+  async execute(input: ILoginInput): Promise<{ accessToken: string }> {
+    const user = await this.userRepo.findUserByEmail(input.email);
     if (!user) throw new Error('Invalid credentials');
-    const valid = await this.encryptionService.compare(user.passwordHash, input.password);
-    if (!valid) throw new Error('Invalid credentials');
-    // JWT creation
-    const token = this.jwtService.sign({ sub: user.email, fullName: user.fullName });
-    return { token, email: user.email, fullName: user.fullName };
+    const ok = await this.passwordVerifier.verify(user.passwordHash, input.password);
+    if (!ok) throw new Error('Invalid credentials');
+    const token = this.tokenService.issueToken({ userId: user.id, email: user.email });
+    return { accessToken: token };
   }
 }

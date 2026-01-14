@@ -1,26 +1,14 @@
-// Depends ONLY on models (ports/interfaces/contracts)
-import { IEncryptionService } from '../../../shared/models/services/IEncryptionService';
-import type { IUserRepository } from '../models/db/IUserRepository';
-import type { SignUpInput } from '../models/entities/SignUpInput';
-import { userSchema } from '../models/entities/User';
+import { IUserRepository } from '../models/IUserRepository';
+import { ISignUpInput } from '../models/SignUpInput';
 
 export class SignUpUseCase {
-  constructor(
-    private userRepository: IUserRepository,
-    private encryptionService: IEncryptionService
-  ) { }
+  constructor(private userRepo: IUserRepository, private passwordHasher: { hash: (pw: string) => Promise<string> }) {}
 
-  async execute(input: SignUpInput) {
-    userSchema.parse({ ...input, passwordHash: 'dummy' }); // parse basic input
-    const existing = await this.userRepository.findByEmail(input.email);
-    if (existing) throw new Error('User already exists');
-    const passwordHash = await this.encryptionService.hash(input.password);
-    const newUser = {
-      email: input.email,
-      passwordHash,
-      fullName: input.fullName,
-    };
-    await this.userRepository.create(newUser);
-    return { email: newUser.email, fullName: newUser.fullName };
+  async execute(input: ISignUpInput): Promise<{ id: string; email: string }> {
+    const emailTaken = await this.userRepo.findUserByEmail(input.email);
+    if (emailTaken) throw new Error('Email is already registered');
+    const hash = await this.passwordHasher.hash(input.password);
+    const user = await this.userRepo.createUser(input, hash);
+    return { id: user.id, email: user.email };
   }
 }

@@ -1,27 +1,16 @@
-import { Express, Router } from "express";
-import { SignUpController } from "../controllers/auth/SignUpController";
-import { LoginController } from "../controllers/auth/LoginController";
-import { zodValidate } from "../middlewares/zodValidate";
-// schemas
-import { signUpInputSchema } from "../../application/auth/sign-up/models/entities/SignUpInput";
-import { loginInputSchema } from "../../application/auth/login/models/entities/LoginInput";
+import { Router } from 'express';
+import { zodValidate } from '../middlewares/zodValidate';
+import { signUpController } from '../controllers/SignUpController';
+import { loginController } from '../controllers/LoginController';
+import { refreshTokenController } from '../controllers/RefreshTokenController';
+import { SignUpInputSchema } from '../../application/auth/sign-up/models/SignUpInput';
+import { LoginInputSchema } from '../../application/auth/login/models/LoginInput';
+import { RefreshTokenInputSchema } from '../../application/auth/refresh-token/models/RefreshTokenInput';
 
-export const createAuthRoutes = (app: Express) => {
-    const router = Router();
-    const signUpController = new SignUpController();
-    const loginController = new LoginController();
+const router = Router();
 
-    router.post(
-        "/sign-up",
-        zodValidate(signUpInputSchema),
-        signUpController.handle.bind(signUpController)
-    );
+router.post('/signup', zodValidate(SignUpInputSchema), signUpController);
+router.post('/login', zodValidate(LoginInputSchema), loginController);
+router.post('/refresh-token', zodValidate(RefreshTokenInputSchema), refreshTokenController);
 
-    router.post(
-        "/login",
-        zodValidate(loginInputSchema),
-        loginController.handle.bind(loginController)
-    );
-
-    app.use("/api/auth", router);
-};
+export default router;

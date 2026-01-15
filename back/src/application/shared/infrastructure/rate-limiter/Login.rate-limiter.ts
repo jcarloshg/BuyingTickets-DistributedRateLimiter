@@ -20,7 +20,7 @@ export class LoginRateLimiter {
             if (reqs > LoginRateLimiterValues.MAX_REQUESTS) {
                 const ttl = await redis.ttl(key);
                 return {
-                    success: false,
+                    success: true,
                     allowed: false,
                     retryAfter: ttl,
                     message: `Rate limit exceeded. Try again in ${ttl} seconds.`,

@@ -8,7 +8,7 @@ import { LoginRateLimiterValues } from "../../application/shared/infrastructure/
 // Each client's IP is limited to X requests per WINDOW_SECONDS using a Redis COUNTER.
 // If the limit is exceeded, return HTTP 429 (Too Many Requests)
 
-export async function RateLimiter(
+export async function LogInRateLimiterMiddleware(
   req: Request,
   res: Response,
   next: NextFunction

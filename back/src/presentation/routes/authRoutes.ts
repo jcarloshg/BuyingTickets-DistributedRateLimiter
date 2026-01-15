@@ -6,17 +6,21 @@ import { refreshTokenController } from "../controllers/RefreshTokenController";
 import { SignUpInputSchema } from "../../application/auth/sign-up/models/SignUpInput";
 import { LoginInputSchema } from "../../application/auth/login/models/LoginInput";
 import { RefreshTokenInputSchema } from "../../application/auth/refresh-token/models/RefreshTokenInput";
-import { RateLimiter } from "../middlewares/RateLimiter.middleware";
+import { LogInRateLimiterMiddleware } from "../middlewares/LogginRateLimiter.middleware";
 
 const router = Router();
 
 router.post(
     "/signup",
     zodValidate(SignUpInputSchema),
-    RateLimiter,
+    LogInRateLimiterMiddleware,
     signUpController
 );
-router.post("/login", zodValidate(LoginInputSchema), loginController);
+router.post(
+    "/login",
+    zodValidate(LoginInputSchema),
+    loginController
+);
 router.post(
     "/refresh-token",
     zodValidate(RefreshTokenInputSchema),

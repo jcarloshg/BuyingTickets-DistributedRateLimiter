@@ -15,10 +15,13 @@ export async function loginController(req: Request, res: Response) {
     const crypto = new Argon2CryptoService();
     const tokenService = new JwtTokenService();
     const useCase = new LoginUseCase(loginRepo, crypto, tokenService);
+
     // Execute use case
     const input = LoginInputSchema.parse(req.body);
     const data = await useCase.execute(input);
+
     res.status(200).json(data);
+
   } catch (err: any) {
     res.status(401).json({ error: err.message ?? 'Login failed' });
   }

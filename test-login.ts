@@ -2,21 +2,17 @@ import { writeFileSync } from "fs";
 
 
 type IRandomData = {
-    "email": string,
-    "password": string,
+    email: string,
+    password: string,
     // flag for the tests results
     signupResponse?: boolean,
     loginResponse?: boolean,
+    loginTime?: string,
     token?: string,
     messageErrorToken?: string,
     server?: string,
     ownIp?: string
 }
-
-const randomIps: string[] = [
-    "192.168.1.101",
-    "172.16.0.5",
-]
 
 const getRandomIP = (): string => {
     const octet1 = Math.floor(Math.random() * 256);
@@ -40,26 +36,26 @@ const urlsLogin: string[] = [
 
 const randomData: IRandomData[] = [
     { "email": "skywalker23@email.com", "password": "skywalker23abc123" },
-    // { "email": "skywalker23@email.comn", "password": "skywalker23abc123" },
-    // { "email": "pixel_panda@email.comn", "password": "pixel_pandaabc123" },
-    // { "email": "nova_rider@email.comn", "password": "nova_riderabc123" },
-    // { "email": "echo_blaze@email.comn", "password": "echo_blazeabc123" },
-    // { "email": "frostbyte7@email.comn", "password": "frostbyte7abc123" },
-    // { "email": "luna_coder@email.comn", "password": "luna_coderabc123" },
-    // { "email": "byte_bandit@email.comn", "password": "byte_banditabc123" },
-    // { "email": "zenith_wave@email.comn", "password": "zenith_waveabc123" },
-    // { "email": "cyber_owl@email.comn", "password": "cyber_owlabc123" },
-    // { "email": "astro_knight@email.comn", "password": "astro_knightabc123" },
-    // { "email": "shadow_mint@email.comn", "password": "shadow_mintabc123" },
-    // { "email": "neon_nimbus@email.comn", "password": "neon_nimbusabc123" },
-    // { "email": "quasar_fox@email.comn", "password": "quasar_foxabc123" },
-    // { "email": "glitchy_gem@email.comn", "password": "glitchy_gemabc123" },
-    // { "email": "orbitronix@email.comn", "password": "orbitronixabc123" },
-    // { "email": "matrix_muse@email.comn", "password": "matrix_museabc123" },
-    // { "email": "blitz_bard@email.comn", "password": "blitz_bardabc123" },
-    // { "email": "vortex_vibe@email.comn", "password": "vortex_vibeabc123" },
-    // { "email": "stellar_sage@email.comn", "password": "stellar_sageabc123" },
-    // { "email": "quantum_quill@email.comn", "password": "quantum_quillabc123" }
+    { "email": "skywalker23@email.comn", "password": "skywalker23abc123" },
+    { "email": "pixel_panda@email.comn", "password": "pixel_pandaabc123" },
+    { "email": "nova_rider@email.comn", "password": "nova_riderabc123" },
+    { "email": "echo_blaze@email.comn", "password": "echo_blazeabc123" },
+    { "email": "frostbyte7@email.comn", "password": "frostbyte7abc123" },
+    { "email": "luna_coder@email.comn", "password": "luna_coderabc123" },
+    { "email": "byte_bandit@email.comn", "password": "byte_banditabc123" },
+    { "email": "zenith_wave@email.comn", "password": "zenith_waveabc123" },
+    { "email": "cyber_owl@email.comn", "password": "cyber_owlabc123" },
+    { "email": "astro_knight@email.comn", "password": "astro_knightabc123" },
+    { "email": "shadow_mint@email.comn", "password": "shadow_mintabc123" },
+    { "email": "neon_nimbus@email.comn", "password": "neon_nimbusabc123" },
+    { "email": "quasar_fox@email.comn", "password": "quasar_foxabc123" },
+    { "email": "glitchy_gem@email.comn", "password": "glitchy_gemabc123" },
+    { "email": "orbitronix@email.comn", "password": "orbitronixabc123" },
+    { "email": "matrix_muse@email.comn", "password": "matrix_museabc123" },
+    { "email": "blitz_bard@email.comn", "password": "blitz_bardabc123" },
+    { "email": "vortex_vibe@email.comn", "password": "vortex_vibeabc123" },
+    { "email": "stellar_sage@email.comn", "password": "stellar_sageabc123" },
+    { "email": "quantum_quill@email.comn", "password": "quantum_quillabc123" }
 ];
 
 export const signUp = async (randomData: IRandomData): Promise<IRandomData> => {
@@ -85,7 +81,6 @@ export const signUp = async (randomData: IRandomData): Promise<IRandomData> => {
         randomData.server = randomServer;
         randomData.ownIp = randomIP;
         randomData.signupResponse = true;
-
         return randomData;
     } catch (error) {
         randomData.signupResponse = false;
@@ -115,20 +110,27 @@ const login = async (randomData: IRandomData): Promise<IRandomData> => {
                 body: JSON.stringify({
                     email: randomData.email,
                     password: randomData.password
-                })
-            }
+                }),
+                cache: "no-store"
+            },
         )
 
         const resJson = (await response.json()) as any;
-        console.log(`resJson: `, resJson);
 
-        if (response.status === 200 && resJson.accessToken) {
+
+        if (resJson.accessToken) {
+            console.log("si");
+
             randomData.loginResponse = true;
             randomData.token = resJson.accessToken;
-        } else {
+        }
+        if (resJson.message) {
+            console.log("no");
             randomData.loginResponse = false;
             randomData.messageErrorToken = resJson.message || "No token received";
         }
+
+        randomData.loginTime = new Date().toISOString();
 
         // if (response.status === 200 && resJson.token) {
         //     randomData.loginResponse = true;
@@ -161,21 +163,25 @@ const login = async (randomData: IRandomData): Promise<IRandomData> => {
             const randomIntents = Math.floor(Math.random() * 5) + 1; // between 1 and 5
             Array
                 .from({ length: 10 })
-                .forEach(() => requestForLogin.push(data))
+                .forEach(() => requestForLogin.push({ ...data }))
         })
+        console.log(`requestForLogin: `, requestForLogin);
 
         const loginRs = await Promise.all(
             requestForLogin.map(async (data) => await login(data))
         )
+        console.log(`loginRs: `, loginRs);
 
         // finally write results to CSV
         const csvHeaders = [
             "email",
             "password",
             "signupResponse",
-            "token",
+            "loginTime",
+            "messageErrorToken",
             "server",
-            "ownIp"
+            "ownIp",
+            "token",
         ];
 
         const csvRows = loginRs.map(data =>

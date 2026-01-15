@@ -1,0 +1,12 @@
+### Test: Pay for tickets (requires valid JWT)
+POST http://localhost:4000/ticket/pay-ticket
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODc5ZTI4MS05YjUxLTQ4YmMtOTZiZi0yMmVlZTYxYzNhZjMiLCJlbWFpbCI6InVzZXIxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzY4NDQxMzY2LCJleHAiOjE3Njg0NDIyNjZ9.Kg4DdlRQMt_4wK7BHvdpgyG4A_AdfNaYNQh0XhxZa6s
+
+{
+  "ticketUuids": [
+    "d5b21e6b-b7ed-4b97-88c1-2a65f05a8146"
+  ],
+  "userToken": "test-static-or-from-login",
+  "creditCard": "4111111111111111"
+}

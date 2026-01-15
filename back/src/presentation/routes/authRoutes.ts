@@ -13,11 +13,11 @@ const router = Router();
 router.post(
     "/signup",
     zodValidate(SignUpInputSchema),
-    LogInRateLimiterMiddleware,
     signUpController
 );
 router.post(
     "/login",
+    LogInRateLimiterMiddleware,
     zodValidate(LoginInputSchema),
     loginController
 );

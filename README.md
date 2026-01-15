@@ -1,5 +1,8 @@
 # 🚦 Distributed Rate Limiter: High-Concurrency, Flash-Sale Proof 🛡️
 
+- 🏛️ Domain Driven Design, 🧩 Modular Layers, 🧪 Unit Testing, ✅ Input Validation (Zod), 🚨 Exception Handling, 🏗️ Vertical Slice, 🔒 JWT Auth
+- 🐳 Docker Compose, 🔴 Redis (Distributed Atomic Limiting), 🟫 Express, 🌐 Axios, 🧬 Zod, 🧪 Jest, 🟩 Nodemon, 📦 Typescript
+
 ## 🏗️ Architecture Overview
 
 This project implements a **Distributed Rate Limiter** built for high-concurrency and resilience in scenarios like "Flash Sales" where bot-driven inventory hoarding is likely, ensuring both performance and fairness.
@@ -24,6 +27,8 @@ This project implements a **Distributed Rate Limiter** built for high-concurrenc
 
 ## 📚 Table of Contents
 
+- [🐳 Docker Compose Setup](#-docker-compose-setup)
+
 - [✨ Key Features](#-key-features)
 - [🏗️ Architecture Overview](#️-architecture-overview)
 - [🗂️ Project File Structure](#️-project-file-structure)
@@ -36,6 +41,37 @@ This project implements a **Distributed Rate Limiter** built for high-concurrenc
 - [🧩 Pseudocode: Applying the Limiter](#-pseudocode-applying-the-limiter)
 - [🔒 Environment Vars](#-environment-vars)
 - [📜 License](#-license)
+
+## 🐳 Docker Compose Setup
+
+```mermaid
+graph TD
+  subgraph "API Service Cluster"
+    B1([backend-01:4001])
+    B2([backend-02:4002])
+    B3([backend-03:4003])
+  end
+
+  R["Redis\n(append-only, healthcheck)"]
+  V[(redis-data volume)]
+
+  B1 -- "rate limit read/write" --> R
+  B2 -- "rate limit read/write" --> R
+  B3 -- "rate limit read/write" --> R
+  R -- "persistent data" --> V
+```
+
+This project is built for **horizontal scalability and local development on real infrastructure**. The `docker-compose.yml` file spins up multiple API instances (for real-world distributed simulation) and a durable Redis instance for rate limit state:
+
+**Key Points:**
+
+- **Simulates a cluster**: Three API containers + Redis—mirroring real HA deployments.
+- **Debugging**: Port 9229 exposed on first backend for live debugging from VSCode/WebStorm/etc.
+- **Durability**: Redis uses append-only file mode; volume is persisted so rate limit history survives restarts.
+- **Easy .env switching**: Swap between `.env` and `.env.example` for different scenarios (prod/dev).
+- **Scale**: Add `backend-04`, `backend-05`, etc., literally by copy-pasting in YAML.
+
+---
 
 ## 🗂️ Project File Structure
 

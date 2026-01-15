@@ -1,4 +1,3 @@
-version: "3"
 services:
   backend:
     build:
@@ -10,18 +9,20 @@ services:
     env_file:
       - ./back/.env.example
     volumes:
-      - ./back:/app
-      - /app/node_modules
+      - ./back:/app # Mounts the local ./back directory to /app in the container for live code updates
+      # - /app/node_modules     # Ensures node_modules inside the container are not overwritten by the host
+    depends_on:
+      - redis
 
   redis:
     image: "redis:7-alpine"
     container_name: redis
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes"]
+    # command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis-data:/data
-    # ports:
-    #   - "6379:6379"  # Uncomment if you need host access
+    ports:
+      - "6379:6379" # Uncomment if you need host access
     labels:
       - "service=redis"
 

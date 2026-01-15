@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   backend-01:
     build:
@@ -5,14 +6,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4001:4000"
-      - "9229:9229"
+      - "9229:9229"         # Expose debug port ONLY for backend-01
     env_file:
-      - ./back/.env.example
+      - ./back/.env          # Use .env for real environment, .env.example for reference
     volumes:
-      - ./back:/app # Mounts the local ./back directory to /app in the container for live code updates
-      # - /app/node_modules     # Ensures node_modules inside the container are not overwritten by the host
+      - ./back:/app          # Dev only; remove for production for safety/performance
+      # - /app/node_modules  # Dev only; uncomment if host node_modules conflict with container
     depends_on:
       - redis
+    restart: unless-stopped
 
   backend-02:
     build:
@@ -20,14 +22,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4002:4000"
-      - "9229:9229"
+      # - "9229:9229"       # Debug port unnecessary unless multi-debug in dev
     env_file:
-      - ./back/.env.example
+      - ./back/.env
     volumes:
-      - ./back:/app # Mounts the local ./back directory to /app in the container for live code updates
-      # - /app/node_modules     # Ensures node_modules inside the container are not overwritten by the host
+      - ./back:/app
+      # - /app/node_modules
     depends_on:
       - redis
+    restart: unless-stopped
 
   backend-03:
     build:
@@ -35,24 +38,30 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4003:4000"
-      - "9229:9229"
+      # - "9229:9229"
     env_file:
-      - ./back/.env.example
+      - ./back/.env
     volumes:
-      - ./back:/app # Mounts the local ./back directory to /app in the container for live code updates
-      # - /app/node_modules     # Ensures node_modules inside the container are not overwritten by the host
+      - ./back:/app
+      # - /app/node_modules
     depends_on:
       - redis
+    restart: unless-stopped
 
   redis:
     image: "redis:7-alpine"
     container_name: redis
     restart: unless-stopped
-    # command: ["redis-server", "--appendonly", "yes"]
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - redis-data:/data
-    ports:
-      - "6379:6379" # Uncomment if you need host access
+    # ports:
+    #   - "6379:6379"        # Enable only if host needs direct Redis access
     labels:
       - "service=redis"
 

@@ -14,11 +14,15 @@ export async function LogInRateLimiterMiddleware(
   next: NextFunction
 ) {
 
-  console.log(`req.ip: `, req.ip);
-  console.log(`req.headers["x-simulate-ip"]: `, req.headers["X-SIMULATE_IP"]);
+  // Extract custom header in a case-insensitive way
+  const simulateIpHeader = req.headers["x-simulate-ip"] || req.headers["X-SIMULATE-IP"];
+  console.log(`simulateIpHeader: `, simulateIpHeader);
+  const simulateIp = typeof simulateIpHeader === "string" && simulateIpHeader.trim() !== ""
+    ? simulateIpHeader
+    : req.ip || "some-ip";
 
-  const simulateIp = req.headers["x-simulate-ip"] as string || req.ip || "some-ip";
-  console.log(`simulateIp: `, simulateIp);
+  // Optionally log for debugging
+  // console.log(`simulateIp: `, simulateIp);
   const loginRateLimiter = await LoginRateLimiter.checkRateLimitKey(simulateIp);
 
   // error for handling

@@ -1,5 +1,5 @@
 ### SIGN UP
-POST http://localhost:4000/auth/signup
+POST http://localhost:4001/auth/signup
 Content-Type: application/json
 
 {

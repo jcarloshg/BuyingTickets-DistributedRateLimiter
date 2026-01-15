@@ -13,8 +13,9 @@ export async function LogInRateLimiterMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const ip = req.ip || "some-ip";
-  const loginRateLimiter = await LoginRateLimiter.checkRateLimitKey(ip);
+  const simulateIp = req.headers["x-simulate-ip"] as string || req.ip || "some-ip";
+  console.log(`simulateIp: `, simulateIp);
+  const loginRateLimiter = await LoginRateLimiter.checkRateLimitKey(simulateIp);
 
   // error for handling
   if (loginRateLimiter.success == false) {
